@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import GoodsListElement from "../GoodsListElement/GoodsListElement";
 import PropTypes from "prop-types";
+
+import GoodsListElement from "../GoodsListElement/GoodsListElement";
 
 export default class GoodsList extends Component {
   onDelete = (id) => {
@@ -40,4 +41,7 @@ GoodsList.defaultProps = {
 
 GoodsList.propTypes = {
   goods: PropTypes.array,
+  onDelete:PropTypes.func,
+  onSelected:PropTypes.func,
+  onEdit:PropTypes.func,
 };

@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+
 import "./GoodsListElement.css";
 
 export default class GoodsListElement extends Component {
@@ -35,3 +37,14 @@ export default class GoodsListElement extends Component {
     );
   }
 }
+GoodsListElement.defaultProps = {
+  good: {},
+};
+
+GoodsListElement.propTypes = {
+  good: PropTypes.object,
+  onDelete: PropTypes.func,
+  onSelected:PropTypes.func,
+  onEdit:PropTypes.func,
+
+};

@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+
 import "./GoodsListForm.css";
 
-export default class prevPropsGoodsListForm extends Component {
+export default class GoodsListForm extends Component {
   state = { title: "", weight: "", description: "" };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -69,3 +71,13 @@ export default class prevPropsGoodsListForm extends Component {
     );
   }
 }
+GoodsListForm.defaultProps = {
+  editField: {},
+};
+
+GoodsListForm.propTypes = {
+  onAdd: PropTypes.func,
+  editField:PropTypes.object,
+  editElement:PropTypes.func,
+
+};
