@@ -1,71 +1,90 @@
-import React, { Component } from "react";
+import React, {useCallback} from "react";
+import PropTypes from 'prop-types';
+
 import "./GoodsListForm.css";
 
-export default class prevPropsGoodsListForm extends Component {
-  state = { title: "", weight: "", description: "" };
+const GoodsListForm = ({ editField, editElement, onAdd }) => {
+  const [stateForm, setStateForm] = React.useState({
+    id: "",
+    title: "",
+    weight: "",
+    description: "",
+    edit: false,
+    selected: false,
+  });
+  const { title, weight, description } = stateForm;
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.editField.id !== prevProps.editField.id) {
-      this.setState({ ...this.props.editField });
-    }
-  }
+  React.useEffect(() => {
+    if (!editField.id) return;
+    setStateForm({ ...editField });
+  }, [editField]);
 
-  onFormSubmit = (e) => {
+  const onInputChange = useCallback(({ target }) => {
+    setStateForm({
+      ...stateForm,
+      [target.name]: target.value,
+    });
+  },[stateForm]);
+
+  const onFormSubmit = useCallback((e) => {
     e.preventDefault();
-    if (this.props.editField.edit) {
-      const editField = { ...this.state };
-      this.props.editElement(editField);
+    if (editField.edit) {
+      editElement({ ...stateForm });
     } else {
-      if (this.state.description && this.state.title && this.state.weight) {
-        this.props.onAdd(this.state);
+      if (description && title && weight) {
+        onAdd(stateForm);
       } else return;
     }
 
-    this.setState({
-      description: "",
-      edit: false,
+    setStateForm({
       id: "",
-      selected: false,
       title: "",
       weight: "",
+      description: "",
+      edit: false,
+      selected: false,
     });
-  };
+  },[stateForm,editField,editElement,onAdd,weight,title,description]);
 
-  onInputChange = ({ target }) => {
-    this.setState({
-      [target.name]: target.value,
-    });
-  };
+  return (
+    <div>
+      <form className="GoodsListForm" onSubmit={onFormSubmit}>
+        <input
+          className="GoodsListFormInput"
+          placeholder="Title"
+          name="title"
+          value={title}
+          onChange={onInputChange}
+        />
+        <input
+          className="GoodsListFormInput"
+          placeholder="Weight"
+          name="weight"
+          value={weight}
+          onChange={onInputChange}
+        />
+        <input
+          className="GoodsListFormInput"
+          placeholder="Description"
+          name="description"
+          value={description}
+          onChange={onInputChange}
+        />
+        <button className="GoodsListFormButton">Add</button>
+      </form>
+    </div>
+  );
+};
 
-  render() {
-    const { title, weight, description } = this.state;
-    return (
-      <div>
-        <form className="GoodsListForm" onSubmit={this.onFormSubmit}>
-          <input
-            className="GoodsListFormInput"
-            placeholder="Title"
-            name="title"
-            value={title}
-            onChange={this.onInputChange}
-          />
-          <input
-            className="GoodsListFormInput"
-            placeholder="Weight"
-            name="weight"
-            value={weight}
-            onChange={this.onInputChange}
-          />
-          <input
-            className="GoodsListFormInput"
-            placeholder="Description"
-            name="description"
-            value={description}
-            onChange={this.onInputChange}
-          />
-          <button className="GoodsListFormButton">Add</button>
-        </form>
-      </div>
-    );
-  }
-}
+GoodsListForm.defaultProps = {
+  editField: {},
+};
+
+GoodsListForm.propTypes = {
+  onAdd: PropTypes.func,
+  editField:PropTypes.object,
+  editElement:PropTypes.func,
+
+};
+
+export default GoodsListForm;

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
- const goods = [
+export const goods = [
   {
     id: uuidv4(),
     title: "Milk",
@@ -42,4 +42,4 @@ import { v4 as uuidv4 } from "uuid";
     edit: false,
   },
 ];
- export default goods;
+

@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import GoodsList from "../GoodsList/GoodsList";
-import goods from "../Mocks/GoodsMock";
-import GoodsListForm from "../GoodsListForm/GoodsListForm";
-import "./App.css";
+import React, {useCallback} from 'react';
+import GoodsList from '../GoodsList/GoodsList';
+import { goods as goodsArray } from '../Mocks/GoodsMock';
+import GoodsListForm from '../GoodsListForm/GoodsListForm';
+import './App.css';
 import {
   addNewItem,
   removeElementById,
@@ -12,91 +12,75 @@ import {
   editHandler,
   editableElement,
   deleteSelected,
-} from "../Utils/goodsUtils";
+} from '../Utils/goodsUtils';
 
-export default class App extends Component {
-  state = {
-    goods,
-    total: getTotal(goods),
-    totalSelected: [],
-    editField: {},
-  };
-  componentDidUpdate(prevProps, prevState, snapshot) {}
+const App = () => {
+  const [goods, setGoods] = React.useState(goodsArray);
+  const [total, setTotal] = React.useState(getTotal(goods));
+  const [totalSelected, setTotalSelected] = React.useState([]);
+  const [editField, setEditField] = React.useState({});
 
-  onAdd = (newElement) => {
-    this.setState(({ goods }) => {
-      const newArray = addNewItem(newElement, goods);
-      return {
-        goods: newArray,
-        total: getTotal(newArray),
-      };
-    });
-  };
-  onEdit = (id) => {
-    this.setState({ editField: editHandler(id, this.state.goods) });
-  };
-  editElement = (element) => {
-    this.setState(({ goods }) => {
-      const newArray = editableElement(element, goods);
-      return {
-        goods: newArray,
-        total: getTotal(newArray),
-        editField: {},
-        totalSelected: null,
-      };
-    });
-  };
+  const onAdd = useCallback((newElement) => {
+    const newArray = addNewItem(newElement, goods);
+    setGoods(newArray);
+    setTotal(getTotal(newArray));
+  },[goods]);
 
-  onDelete = (id) => {
-    const newArray = removeElementById(id, this.state.goods);
-    this.setState({
-      goods: newArray,
-      total: getTotal(newArray),
-      totalSelected: getTotalSelected(newArray),
-    });
-  };
-  onSelected = (id) => {
-    const newArray = onSelect(id, this.state.goods);
+  const onEdit = useCallback((id) => {
+    setEditField(editHandler(id, goods));
+  },[goods]);
 
-    this.setState({
-      goods: newArray,
-      totalSelected: getTotalSelected(newArray),
-    });
-  };
+  const editElement = useCallback((element) => {
+    const newArray = editableElement(element, goods);
+    setGoods(newArray);
+    setTotal(getTotal(newArray));
+    setEditField({});
+    setTotalSelected(null);
+  },[goods]);
 
-  onDeleteSelected = () => {
-    const newGoods = deleteSelected(this.state.goods);
-    this.setState({
-      goods: newGoods,
-      total: getTotal(newGoods),
-      totalSelected: null,
-    });
-  };
+  const onDelete = useCallback((id) => {
+    const newArray = removeElementById(id, goods);
+    setGoods(newArray);
+    setTotal(getTotal(newArray));
+    setTotalSelected(getTotalSelected(newArray));
+  },[goods]);
 
-  render() {
-    const { total, totalSelected, goods, editField } = this.state;
-    return (
-      <div className="Container">
-        <div className="Title">Fridge</div>
-        <GoodsList
-          goods={goods}
-          onDelete={this.onDelete}
-          onSelected={this.onSelected}
-          onEdit={this.onEdit}
-        />
-        <div className="Total">
-          <div>Total:</div>
-          <div>{total}</div>
-          <div>{totalSelected ? totalSelected : ""}</div>
-          <button onClick={this.onDeleteSelected}>DeleteSelected</button>
-          <div />
-        </div>
-        <GoodsListForm
-          onAdd={this.onAdd}
-          editField={editField}
-          editElement={this.editElement}
-        />
+  const onSelected = useCallback((id) => {
+    const newArray = onSelect(id, goods);
+    setGoods(newArray);
+    setTotalSelected(getTotalSelected(newArray));
+  },[goods]);
+
+  const onDeleteSelected = useCallback(() => {
+    const newGoods = deleteSelected(goods);
+    setGoods(newGoods);
+    setTotal(getTotal(newGoods));
+    setTotalSelected(null);
+  },[goods]);
+
+  return (
+    <div className="Container">
+      <div className="Title">Fridge</div>
+      <GoodsList
+        goods={goods}
+        onDelete={onDelete}
+        onSelected={onSelected}
+        onEdit={onEdit}
+      />
+      <div className="Total">
+        <div>Total:</div>
+        <div>{total}</div>
+        <div>{totalSelected || null}</div>
+        <button onClick={onDeleteSelected}>DeleteSelected</button>
+        <div />
       </div>
-    );
-  }
-}
+      <GoodsListForm
+        onAdd={onAdd}
+        editField={editField}
+        editElement={editElement}
+      />
+    </div>
+  );
+};
+
+export default App;
