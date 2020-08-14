@@ -1,27 +1,27 @@
-import React, {useCallback} from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import GoodsListElement from '../GoodsListElement/GoodsListElement';
+import GoodsListElement from "../GoodsListElement/GoodsListElement";
 
-const GoodsList = ({
-  goods, onDelete, onSelected, onEdit,
-}) => {
-  const onDeleteList = useCallback((id) => {
-    onDelete(id);
-  },[onDelete]);
+const GoodsList = ({ goods, onDelete, onSelected, onEdit }) => {
 
-  const onSelectedList = useCallback((id) => {
-    onSelected(id);
-  },[onSelected]);
+  const onDeleteList = (id) => {
+      onDelete(id);
+    }
 
-  const insertIntoForm = useCallback((id) => {
-    onEdit(id);
-  },[onEdit]);
+
+  const onSelectedList = (id) => {
+      onSelected(id);
+    }
+
+  const insertIntoForm = (id) => {
+      onEdit(id);
+    }
 
   return (
     <div>
-      {Array.isArray(goods)
-        && goods.map((good) => (
+      {Array.isArray(goods) &&
+        goods.map((good) => (
           <GoodsListElement
             good={good}
             key={good.id}
@@ -39,9 +39,9 @@ GoodsList.defaultProps = {
 
 GoodsList.propTypes = {
   goods: PropTypes.array,
-  onDelete:PropTypes.func,
-  onSelected:PropTypes.func,
-  onEdit:PropTypes.func,
+  onDelete: PropTypes.func,
+  onSelected: PropTypes.func,
+  onEdit: PropTypes.func,
 };
 
 export default GoodsList;

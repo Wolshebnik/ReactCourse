@@ -1,25 +1,24 @@
-import React, {useCallback} from "react";
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 import "./GoodsListElement.css";
-
 
 const GoodsListElement = ({ good, onDelete, onSelected, insertIntoForm }) => {
   const { id, title, weight, description, selected } = good;
 
-  const onDeleteItem = useCallback((e) => {
+  const onDeleteItem = (e) => {
     e.stopPropagation();
     onDelete(id);
-  },[onDelete,id]);
+  };
 
-  const onSelectedItem = useCallback(() => {
+  const onSelectedItem = () => {
     onSelected(id);
-  },[onSelected,id]);
+  };
 
-  const insertIntoFormItem = useCallback((e) => {
+  const insertIntoFormItem = (e) => {
     e.stopPropagation();
     insertIntoForm(id);
-  },[insertIntoForm,id]);
+  };
 
   return (
     <div
@@ -46,8 +45,7 @@ GoodsListElement.defaultProps = {
 GoodsListElement.propTypes = {
   good: PropTypes.object,
   onDelete: PropTypes.func,
-  onSelected:PropTypes.func,
-  insertIntoForm:PropTypes.func,
-
+  onSelected: PropTypes.func,
+  insertIntoForm: PropTypes.func,
 };
 export default GoodsListElement;
