@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import "./GoodsListElement.css";
 
 const GoodsListElement = ({ good, onDelete, onSelected, insertIntoForm }) => {
+
+
   const { id, title, weight, description, selected } = good;
 
   const onDeleteItem = (e) => {

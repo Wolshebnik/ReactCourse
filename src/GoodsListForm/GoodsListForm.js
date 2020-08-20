@@ -1,50 +1,44 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import "./GoodsListForm.css";
+import { addEditItem, addItem, clearEditItem, newState, updateStateForm } from '../Store/actions';
 
-const GoodsListForm = ({editField, editElement, onAdd}) => {
-	const [stateForm, setStateForm] = React.useState({
-		id: "",
-		title: "",
-		weight: "",
-		description: "",
-		edit: false,
-		selected: false,
-	});
-	const {title, weight, description} = stateForm;
+import './GoodsListForm.css';
+
+const GoodsListForm = () => {
+
+	const dispatch = useDispatch();
+
+	const formData = useSelector(state => state.form);
+	const goodItem = useSelector(state => state.goods.editField);
+	const {title, description, weight} = formData;
+
 
 	React.useEffect(() => {
-		if (!editField.id) return;
-		setStateForm({...editField});
-	}, [editField]);
+		if (!goodItem.id) return;
+		dispatch(newState(goodItem));
+	}, [dispatch, goodItem]);
 
-	const onInputChange = ({target}) => {
-		setStateForm({
-			...stateForm,
-			[target.name]: target.value
-		});
-	};
 
-	const onFormSubmit = (e) => {
+	const onInputChange = useCallback(({target}) => {
+		const value = target.value.replace(',', '.')
+		dispatch(updateStateForm({
+			[target.name]: value
+		}))
+	}, [dispatch]);
+
+	const onFormSubmit = useCallback((e) => {
 		e.preventDefault();
-		if (editField.edit) {
-			editElement({...stateForm});
+
+		if (goodItem.id) {
+			dispatch(addEditItem(formData))
+			dispatch(clearEditItem())
 		} else {
 			if (description && title && weight) {
-				onAdd(stateForm);
+				dispatch(addItem(formData))
 			} else return;
 		}
-
-		setStateForm({
-			id: "",
-			title: "",
-			weight: "",
-			description: "",
-			edit: false,
-			selected: false,
-		});
-	};
+	}, [dispatch, formData, goodItem, description, title, weight]);
 
 	return (
 		<div>
@@ -74,16 +68,6 @@ const GoodsListForm = ({editField, editElement, onAdd}) => {
 			</form>
 		</div>
 	);
-};
-
-GoodsListForm.defaultProps = {
-	editField: {},
-};
-
-GoodsListForm.propTypes = {
-	onAdd: PropTypes.func,
-	editField: PropTypes.object,
-	editElement: PropTypes.func,
 };
 
 export default GoodsListForm;

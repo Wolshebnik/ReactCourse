@@ -1,47 +1,41 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { deletedItem, getEditItem, selectedItem } from '../Store/actions';
 
-import GoodsListElement from "../GoodsListElement/GoodsListElement";
+import GoodsListElement from '../GoodsListElement/GoodsListElement';
 
-const GoodsList = ({ goods, onDelete, onSelected, onEdit }) => {
+const GoodsList = () => {
+	const dispatch = useDispatch();
+	const goods = useSelector(state => state.goods.list)
 
-  const onDeleteList = (id) => {
-      onDelete(id);
-    }
+	const onDeleteList = useCallback((id) => {
+		dispatch(deletedItem(id));
+	}, [dispatch])
 
 
-  const onSelectedList = (id) => {
-      onSelected(id);
-    }
+	const onSelectedItem = useCallback((id) => {
+		dispatch(selectedItem(id));
+	}, [dispatch])
 
-  const insertIntoForm = (id) => {
-      onEdit(id);
-    }
+	const onEdit = useCallback((id) => {
+		dispatch(getEditItem(id));
+	}, [dispatch])
 
-  return (
-    <div>
-      {Array.isArray(goods) &&
-        goods.map((good) => (
-          <GoodsListElement
-            good={good}
-            key={good.id}
-            onDelete={onDeleteList}
-            onSelected={onSelectedList}
-            insertIntoForm={insertIntoForm}
-          />
-        ))}
-    </div>
-  );
+	return (
+		<div>
+			{Array.isArray(goods) &&
+			goods.map((good) => (
+				<GoodsListElement
+					good={good}
+					key={good.id}
+					onDelete={onDeleteList}
+					onSelected={onSelectedItem}
+					insertIntoForm={onEdit}
+				/>
+			))}
+		</div>
+	);
 };
-GoodsList.defaultProps = {
-  goods: [],
-};
 
-GoodsList.propTypes = {
-  goods: PropTypes.array,
-  onDelete: PropTypes.func,
-  onSelected: PropTypes.func,
-  onEdit: PropTypes.func,
-};
 
 export default GoodsList;

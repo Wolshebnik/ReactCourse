@@ -41,13 +41,13 @@ export const onSelect = (id, goods) => {
 
 export const editHandler = (id, goods) => {
   const editGoods = goods.filter((good) => good.id === id);
-  return { ...editGoods[0], ...{ edit: true } };
+  return editGoods[0];
 };
 
 export const editableElement = (element, goods) => {
   const idx = getIndexFind(element.id, goods);
   const copyGoods = [...goods];
-  copyGoods[idx] = { ...element, ...{ edit: false } };
+  copyGoods[idx] = { ...element };
   return copyGoods;
 };
 export const deleteSelected = (goods) =>{
